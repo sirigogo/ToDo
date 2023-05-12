@@ -13,6 +13,10 @@ const List = ({ item, toDos, setToDos, toDo }) => {
   const onChangeTxt = (e) => {
     setCurrentTxt(e.target.value);
   };
+  const onRemove = (id) => {
+    console.log(id);
+    setToDos(toDos.filter((toDo) => toDo.no !== id));
+  };
   useEffect(() => {
     setCurrentTxt(item.title);
   }, [isModify, item]);
@@ -46,7 +50,13 @@ const List = ({ item, toDos, setToDos, toDo }) => {
           >
             수정
           </button>
-          <button>삭제</button>
+          <button
+            onClick={() => {
+              onRemove(item.no);
+            }}
+          >
+            삭제
+          </button>
         </>
       )}
     </li>
