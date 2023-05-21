@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import List from "./components/List";
 
 function App() {
@@ -9,28 +9,39 @@ function App() {
     { no: 2, title: "공부하기" },
     { no: 1, title: "리액트부시기" },
   ]);
-  const plusTodo = (e) => {
-    setToDo(e.target.value);
-  };
-  const onSubmitForm = (e) => {
-    e.preventDefault();
-    console.log({
-      no: toDos[0] ? toDos[0].no + 1 : 0,
-      title: toDo,
-    });
-    setToDos((prev) => [
-      {
+  const plusTodo = useCallback(
+    (e) => {
+      setToDo(e.target.value);
+    },
+    [setToDo]
+  );
+  const onSubmitForm = useCallback(
+    (e) => {
+      console.log(toDos);
+      console.log(toDo);
+      e.preventDefault();
+      console.log({
         no: toDos[0] ? toDos[0].no + 1 : 0,
         title: toDo,
-      },
-      ...prev,
-    ]);
-    setToDo("");
-    console.log(toDos);
-  };
+      });
+      setToDos((prev) => [
+        {
+          no: toDos[0] ? toDos[0].no + 1 : 0,
+          title: toDo,
+        },
+        ...prev,
+      ]);
+      setToDo("");
+      console.log(toDos);
+    },
+    [toDos, toDo]
+  );
+  const Header = useMemo(() => {
+    return <h2>ToDo</h2>;
+  }, []);
   return (
     <div className="App">
-      <h2>ToDo</h2>
+      {Header}
       <form onSubmit={onSubmitForm}>
         <input type="text" onChange={plusTodo} value={toDo} />
         <button>등록하기</button>

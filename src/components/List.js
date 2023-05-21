@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const List = ({ item, toDos, setToDos, toDo }) => {
   const changeTodo = (itemno) => {
@@ -10,18 +10,34 @@ const List = ({ item, toDos, setToDos, toDo }) => {
   };
   const [isModify, setIsModify] = useState(false);
   const [currentTxt, setCurrentTxt] = useState(item.title);
-  const onChangeTxt = (e) => {
-    setCurrentTxt(e.target.value);
-  };
-  const onRemove = (id) => {
-    console.log(id);
-    setToDos(toDos.filter((toDo) => toDo.no !== id));
-  };
+  const onChangeTxt = useCallback(
+    (e) => {
+      setCurrentTxt(e.target.value);
+    },
+    [setCurrentTxt]
+  );
+  const onRemove = useCallback(
+    (id) => {
+      setToDos(toDos.filter((toDo) => toDo.no !== id));
+    },
+    [toDos, setToDos]
+  );
   useEffect(() => {
     setCurrentTxt(item.title);
   }, [isModify, item]);
+  const [topValue, setTopValue] = useState(10);
+  const liStyle = useMemo(() => {
+    return { marginTop: `${topValue}px` };
+  }, [topValue]);
   return (
-    <li key={item.no}>
+    <li key={item.no} style={liStyle}>
+      <button
+        onClick={() => {
+          setTopValue((prev) => prev + 10);
+        }}
+      >
+        탑벨류 변경
+      </button>
       {isModify ? (
         <>
           <input type="text" value={currentTxt} onChange={onChangeTxt} />
